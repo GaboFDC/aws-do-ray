@@ -1,0 +1,49 @@
+# Custom Helm values for Anyscale operator on HyperPod EKS
+#
+# The default Anyscale Helm chart patches add a nodeSelector for
+# "eks.amazonaws.com/capacityType", which HyperPod blocks at the API level.
+# HyperPod also does not set a native capacityType label on nodes by default,
+# so any capacityType-based nodeSelector will cause scheduling failures.
+#
+# This file disables the default marketType patches and replaces them with
+# minimal patches that only add the required tolerations (no nodeSelector).
+# Workload pods schedule on any node that doesn't have a repelling taint.
+
+global:
+  cloudProvider: aws
+
+workloads:
+  serviceAccount:
+    name: anyscale-operator
+
+  marketType:
+    # Disable the default AWS patches that add eks.amazonaws.com/capacityType nodeSelector.
+    # HyperPod does not provide a capacity-type label on nodes, so we remove the
+    # nodeSelector entirely and only keep the tolerations needed for GPU nodes.
+    enableDefaults: false
+    additional:
+      all:
+        # Tolerate Anyscale's capacity-type taint on partitioned nodes
+        - op: add
+          path: /spec/tolerations/-
+          value:
+            key: node.anyscale.com/capacity-type
+            value: "ON_DEMAND"
+            effect: NoSchedule
+      ondemand:
+        - op: add
+          path: /spec/tolerations/-
+          value:
+            key: node.anyscale.com/capacity-type
+            value: "ON_DEMAND"
+            effect: NoSchedule
+        - op: add
+          path: /metadata/annotations/cluster-autoscaler.kubernetes.io~1safe-to-evict
+          value: "false"
+      spot:
+        - op: add
+          path: /spec/tolerations/-
+          value:
+            key: node.anyscale.com/capacity-type
+            value: "SPOT"
+            effect: NoSchedule

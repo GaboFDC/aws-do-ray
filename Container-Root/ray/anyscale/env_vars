@@ -5,7 +5,7 @@ export AWS_EKS_HYPERPOD_CLUSTER="ml-cluster" # Fill this in - Name of Sagemaker 
 
 export AWS_REGION=$(aws ec2 describe-availability-zones --output text --query 'AvailabilityZones[0].[RegionName]') #AWS Region
 
-export AWS_AZ=$(aws sagemaker describe-cluster --cluster-name ${AWS_EKS_HYPERPOD_CLUSTER} --query 'VpcConfig.Subnets[0]' --output text | xargs -I {} aws ec2 describe-subnets --subnet-ids {} --query 'Subnets[0].AvailabilityZone' --output text) # Availability Zone ex/ us-west-2a
+export AWS_AZ=$(aws sagemaker describe-cluster --region ${AWS_REGION} --cluster-name ${AWS_EKS_HYPERPOD_CLUSTER} --query 'VpcConfig.Subnets[0]' --output text | xargs -I {} aws ec2 describe-subnets --subnet-ids {} --query 'Subnets[0].AvailabilityZone' --output text) # Availability Zone ex/ us-west-2a
 
 export ANYSCALE_CLOUD_NAME="anyscale-cloud" # Modify this field to change name for Anyscale cloud
 

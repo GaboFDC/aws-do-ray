@@ -78,8 +78,9 @@ cat > anyscale-s3-policy.json << 'EOF'
 EOF
 aws iam create-policy --policy-name anyscale --policy-document file://anyscale-s3-policy.json
 ACCOUNT_ID=$(echo $ROLE | cut -d':' -f5)
+ROLE_NAME=$(echo $ROLE | awk -F'/' '{print $NF}')
 aws iam attach-role-policy \
-    --role-name $ROLE \
+    --role-name $ROLE_NAME \
     --policy-arn arn:aws:iam::${ACCOUNT_ID}:policy/anyscale
 
 

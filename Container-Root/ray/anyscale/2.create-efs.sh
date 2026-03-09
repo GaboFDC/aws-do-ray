@@ -64,15 +64,17 @@ for ((i=1; i<=MAX_RETRIES; i++)); do
   sleep $RETRY_INTERVAL
 done
 
-# ==== Create Mount Target ====
-echo "Creating mount target in subnet $SUBNET_ID..."
-aws efs create-mount-target \
-  --region $AWS_REGION \
-  --file-system-id "$EFS_ID" \
-  --subnet-id "$SUBNET_ID" \
-  --security-groups "$SECURITY_GROUP_ID"
+# ==== Create Mount Targets ====
+for SID in $SUBNET_ID; do
+  echo "Creating mount target in subnet $SID..."
+  aws efs create-mount-target \
+    --region $AWS_REGION \
+    --file-system-id "$EFS_ID" \
+    --subnet-id "$SID" \
+    --security-groups "$SECURITY_GROUP_ID" 2>/dev/null || echo "Mount target already exists or failed for $SID"
+done
 
-echo "Mount target created for EFS $EFS_ID"
+echo "Mount targets created for EFS $EFS_ID"
 
 echo "export EFS_ID=$EFS_ID" > ./efs_env.sh
 

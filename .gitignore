@@ -1,3 +1,4 @@
 .DS_Store
 Container-Root/version.txt
+Container-Root/ray/anyscale/efs_env.sh
 
