@@ -40,13 +40,13 @@ class StableDiffusionV2:
     def __init__(self):
         from diffusers import EulerDiscreteScheduler, StableDiffusionPipeline
 
-        model_id = "stable-diffusion-v1-5/stable-diffusion-v1-5"
+        model_id = "sd2-community/stable-diffusion-2"
 
-        # scheduler = EulerDiscreteScheduler.from_pretrained(
-        #     model_id, subfolder="scheduler"
-        # )
+        scheduler = EulerDiscreteScheduler.from_pretrained(
+            model_id, subfolder="scheduler"
+        )
         self.pipe = StableDiffusionPipeline.from_pretrained(
-            model_id, torch_dtype=torch.float16
+            model_id, scheduler=scheduler, torch_dtype=torch.float16
         )
         self.pipe = self.pipe.to("cuda")
 
