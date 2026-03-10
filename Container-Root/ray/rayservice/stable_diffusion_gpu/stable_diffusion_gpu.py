@@ -45,7 +45,7 @@ class StableDiffusionV2:
             model_id, subfolder="scheduler"
         )
         self.pipe = StableDiffusionPipeline.from_pretrained(
-            model_id, scheduler=scheduler, revision="fp16", torch_dtype=torch.float16
+            model_id, scheduler=scheduler, torch_dtype=torch.float16
         )
         self.pipe = self.pipe.to("cuda")
 
