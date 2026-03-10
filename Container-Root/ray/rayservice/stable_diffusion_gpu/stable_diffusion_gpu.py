@@ -35,17 +35,18 @@ class APIIngress:
     ray_actor_options={"num_gpus": 1},
     autoscaling_config={"min_replicas": 0, "max_replicas": 2},
 )
+
 class StableDiffusionV2:
     def __init__(self):
         from diffusers import EulerDiscreteScheduler, StableDiffusionPipeline
 
         model_id = "stable-diffusion-v1-5/stable-diffusion-v1-5"
 
-        scheduler = EulerDiscreteScheduler.from_pretrained(
-            model_id, subfolder="scheduler"
-        )
+        # scheduler = EulerDiscreteScheduler.from_pretrained(
+        #     model_id, subfolder="scheduler"
+        # )
         self.pipe = StableDiffusionPipeline.from_pretrained(
-            model_id, scheduler=scheduler, torch_dtype=torch.float16
+            model_id, torch_dtype=torch.float16
         )
         self.pipe = self.pipe.to("cuda")
 
